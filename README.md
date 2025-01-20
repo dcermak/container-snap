@@ -97,6 +97,13 @@ won't have any name resolution inside the new snapshot:
 # cp /etc/resolv.conf $(container-snap get-root 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74)/etc/
 ```
 
+And finally, in case your container image does not specify an unprivileged user
+or sets a root password, you definitely want to copy `/etc/shadow`, or you won't
+be able to log in after reboot:
+```ShellSession
+# cp /etc/shadow $(container-snap get-root 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74)/etc/
+```
+
 Now we need to make sure that the system will actually boot from the new
 snapshot. For that, we will reinstall grub2, regenerate the initrd, write the
 grub config and force install the bootloader again. On openSUSE, this is run as
