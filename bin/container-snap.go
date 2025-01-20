@@ -11,6 +11,7 @@ import (
 
 	"github.com/containers/common/libimage"
 	"github.com/containers/common/pkg/config"
+	"github.com/containers/image/v5/types"
 	"github.com/containers/storage"
 
 	//graphdriver "github.com/containers/storage/drivers"
@@ -255,13 +256,19 @@ func (c *ContainerSnap) pullImage(url string) ([]*libimage.Image, error) {
 		url = "docker://" + url
 	}
 
-	// events := c.runtime.EventChannel()
+	opts := libimage.PullOptions{CopyOptions: libimage.CopyOptions{Progress: make(chan types.ProgressProperties)}}
+	go func() {
+		for e := range opts.Progress {
+			switch e.Event {
+			case types.ProgressEventRead:
+				fmt.Printf("Pulling layer %s, fetched %d of %d\n", e.Artifact.Digest, e.Offset, e.Artifact.Size)
+			case types.ProgressEventDone:
+				fmt.Printf("Pulled layer %s\n", e.Artifact.Digest)
+			}
+		}
+	}()
 
-	imgs, err := c.runtime.Pull(context.Background(), url, config.PullPolicyAlways, nil)
-	if err != nil {
-		return nil, err
-	}
-	return imgs, nil
+	return c.runtime.Pull(context.Background(), url, config.PullPolicyAlways, &opts)
 }
 
 func (c *ContainerSnap) deleteSnapshot(id SnapshotId) error {
