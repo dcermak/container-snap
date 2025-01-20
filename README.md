@@ -56,7 +56,8 @@ following requirements:
 - `snapper` must **not** be installed (otherwise `transactional-update`/`tukit`
   will default to `snapper`)
 
-- `transactional-update` must be installed in the image
+- `transactional-update` must be installed in the image and must include
+  [transactional-update#137](https://github.com/openSUSE/transactional-update/pull/137).
 
 - a kernel must be present as well as systemd, grub2, rsync and a network stack
 
@@ -121,3 +122,20 @@ follows:
 ```
 
 Now reboot and cross your fingers that the machine actually comes up again 🤞
+
+
+# Give it a try
+
+You can find packages for openSUSE in my home project on OBS, including:
+
+- a minimal KVM image with container-snap pre-installed:
+  https://build.opensuse.org/package/show/home:dancermak/kiwi-templates-Minimal
+
+- `transactional-update` built with the necessary patches applied:
+  https://build.opensuse.org/package/show/home:dancermak/transactional-update
+
+- a "bootable" openSUSE container:
+  https://build.opensuse.org/package/show/home:dancermak/opensuse-boot-image
+
+- container-snap itself:
+  https://build.opensuse.org/package/show/home:dancermak/container-snap
