@@ -71,7 +71,7 @@ pull down an image, e.g.:
 
 Ensure that `snapper` is not present on the system by de-installing it:
 ```ShellSession
-# zypper -n rm -f snapper
+# zypper -n rm snapper
 ```
 
 Now switch to the image that you just pulled down:
