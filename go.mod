@@ -10,7 +10,7 @@ require (
 	github.com/containers/image/v5 v5.35.0
 	github.com/containers/storage v1.58.0
 	github.com/sirupsen/logrus v1.9.3
-	github.com/urfave/cli/v3 v3.0.0-alpha9.3
+	github.com/urfave/cli/v3 v3.3.3
 )
 
 require (
