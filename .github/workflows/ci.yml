@@ -24,3 +24,7 @@ jobs:
       - name: build
         run: go build bin/container-snap.go
         working-directory: .
+
+      - name: unit tests
+        run: go test ./...
+        working-directory: .
