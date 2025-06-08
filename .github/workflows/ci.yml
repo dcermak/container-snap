@@ -22,7 +22,7 @@ jobs:
           go-version-file: go.mod
 
       - name: build
-        run: go build bin/container-snap.go
+        run: go build -o container-snap bin/container-snap.go
         working-directory: .
 
       - name: unit tests
