@@ -47,7 +47,7 @@ func getDefaultBtrfsSubvolume() (string, error) {
 
 func main() {
 	var ctrSnap *containersnap.ContainerSnap = nil
-	var url, id []string
+	var url, id string
 
 	cmd := &cli.Command{
 		Name:  "container-snap",
@@ -80,9 +80,9 @@ func main() {
 			{
 				Name:      "pull",
 				Usage:     "Pull the supplied image",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "url", Min: 1, Max: 1, Values: &url}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "url", Destination: &url}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					imgs, err := ctrSnap.PullImage(url[0])
+					imgs, err := ctrSnap.PullImage(url)
 					if err != nil {
 						return err
 					}
@@ -101,9 +101,9 @@ func main() {
 			{
 				Name:      "load",
 				Usage:     "Load the local image. The image must be prefixed with a transport",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "url", Min: 1, Max: 1, Values: &url}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "url", Destination: &url}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					imgs, err := ctrSnap.PullImage(url[0])
+					imgs, err := ctrSnap.PullImage(url)
 					if err != nil {
 						return err
 					}
@@ -123,17 +123,17 @@ func main() {
 			{
 				Name:      "switch",
 				Usage:     "Switches the current default snapshot to the new one",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Min: 1, Max: 1, Values: &id}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Destination: &id}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					return ctrSnap.SwitchToSnapshot(containersnap.SnapshotId(id[0]))
+					return ctrSnap.SwitchToSnapshot(containersnap.SnapshotId(id))
 				},
 			},
 			{
 				Name:      "get-root",
 				Usage:     "Print the root directory of the image from the given ID",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Min: 1, Max: 1, Values: &id}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Destination: &id}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					root, err := ctrSnap.MountedImageDir(containersnap.SnapshotId(id[0]))
+					root, err := ctrSnap.MountedImageDir(containersnap.SnapshotId(id))
 					if err != nil {
 						return err
 					}
@@ -144,24 +144,20 @@ func main() {
 			{
 				Name:      "set-readonly-state",
 				Usage:     "set the snapshot with the given id to readonly or readwrite",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Min: 1, Max: 1, Values: &id}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Destination: &id}},
 				Flags: []cli.Flag{
-					&cli.BoolWithInverseFlag{
-						BoolFlag: &cli.BoolFlag{
-							Name: "readonly",
-						},
-					},
+					&cli.BoolWithInverseFlag{Name: "readonly"},
 				},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					return ctrSnap.SetReadOnlyState(containersnap.SnapshotId(id[0]), c.Bool("readonly"))
+					return ctrSnap.SetReadOnlyState(containersnap.SnapshotId(id), c.Bool("readonly"))
 				},
 			},
 			{
 				Name:      "get-readonly-state",
 				Usage:     "get the readonly state of the snapshot with the given id",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Min: 1, Max: 1, Values: &id}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Destination: &id}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					roState, err := ctrSnap.GetReadOnlyState(containersnap.SnapshotId(id[0]))
+					roState, err := ctrSnap.GetReadOnlyState(containersnap.SnapshotId(id))
 					if err != nil {
 						return err
 					}
@@ -196,7 +192,7 @@ func main() {
 			{
 				Name:  "list-snapshots",
 				Usage: "List all snapshots known to container-snap",
-				Action: func(ctx context.Context, c *cli.Command) error {
+				Action: func(_ context.Context, c *cli.Command) error {
 					snapshots, err := ctrSnap.AllContainerSnapshots()
 					if err != nil {
 						return err
@@ -304,9 +300,9 @@ func main() {
 			{
 				Name:      "create-snapshot",
 				Usage:     "Creates a snapshot based on the provided ID and prints the new ID to stdout",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Min: 1, Max: 1, Values: &id}},
+				Arguments: []cli.Argument{&cli.StringArg{Name: "id", Destination: &id}},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					snap, err := ctrSnap.NewSnapshot(containersnap.SnapshotId(id[0]))
+					snap, err := ctrSnap.NewSnapshot(containersnap.SnapshotId(id))
 					if err == nil {
 						fmt.Println(snap.SnapshotId())
 					}
