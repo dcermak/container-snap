@@ -10,6 +10,7 @@ import (
 
 	"github.com/containers/common/libimage"
 	"github.com/containers/common/pkg/config"
+	"github.com/containers/image/v5/transports/alltransports"
 	"github.com/containers/image/v5/types"
 	"github.com/containers/storage"
 )
@@ -168,7 +169,9 @@ func NewContainerSnap(rootDir string) (*ContainerSnap, error) {
 }
 
 func (c *ContainerSnap) PullImage(url string) ([]*libimage.Image, error) {
-	if !strings.HasPrefix(url, "docker://") {
+	// Check if the URL already has a transport prefix, if not prepend
+	// docker:// which corresponds to pulling from registry
+	if alltransports.TransportFromImageName(url) == nil {
 		url = "docker://" + url
 	}
 
