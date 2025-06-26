@@ -99,11 +99,32 @@ func main() {
 				},
 			},
 			{
-				Name:      "load",
-				Usage:     "Load the local image. The image must be prefixed with a transport",
-				Arguments: []cli.Argument{&cli.StringArg{Name: "url", Destination: &url}},
+				Name:  "load",
+				Usage: "Load the local image from archive or URL",
+				Arguments: []cli.Argument{
+					&cli.StringArg{
+						Name:        "url",
+						Destination: &url,
+						UsageText:   "URL to the image. Must be prefixed with a transport"},
+				},
+				Flags: []cli.Flag{
+					&cli.StringFlag{
+						Name:    "input",
+						Aliases: []string{"i"},
+						Usage:   "Path to the OCI archive from which the image should be loaded",
+					},
+				},
 				Action: func(ctx context.Context, c *cli.Command) error {
-					imgs, err := ctrSnap.PullImage(url)
+					var imageUrl string
+					if inputFile := c.String("input"); inputFile != "" {
+						imageUrl = "oci-archive://" + inputFile
+					} else if url != "" {
+						imageUrl = url
+					} else {
+						return fmt.Errorf("Either URL argument or --input/-i flag must be provided")
+					}
+
+					imgs, err := ctrSnap.PullImage(imageUrl)
 					if err != nil {
 						return err
 					}
