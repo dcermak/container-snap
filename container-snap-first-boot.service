@@ -1,0 +1,19 @@
+[Unit]
+Description=Container Snap First Boot Service
+Documentation=https://github.com/dcermak/container-snap
+After=kiwi_containers.service network-online.target
+Requires=kiwi_containers.service network-online.target
+Wants=network-online.target
+ConditionPathExists=/var/lib/container-snap/.first-boot-required
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/container-snap-first-boot.sh
+ExecStartPost=/usr/bin/rm -f /var/lib/container-snap/.first-boot-required
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=container-snap-first-boot
+
+[Install]
+WantedBy=multi-user.target
