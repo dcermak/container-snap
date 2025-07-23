@@ -6,7 +6,7 @@ toolchain go1.24.3
 
 require (
 	github.com/containerd/btrfs/v2 v2.0.0
-	github.com/containers/common v0.63.1
+	github.com/containers/common v0.64.0
 	github.com/containers/image/v5 v5.36.0
 	github.com/containers/storage v1.59.0
 	github.com/moby/sys/mountinfo v0.7.2
@@ -16,7 +16,6 @@ require (
 
 require (
 	dario.cat/mergo v1.0.2 // indirect
-	github.com/Azure/go-ansiterm v0.0.0-20250102033503-faa5f7b0171c // indirect
 	github.com/BurntSushi/toml v1.5.0 // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/Microsoft/hcsshim v0.13.0 // indirect
@@ -71,7 +70,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.2 // indirect
 	github.com/opencontainers/go-digest v1.0.0 // indirect
 	github.com/opencontainers/image-spec v1.1.1 // indirect
-	github.com/opencontainers/runc v1.2.6 // indirect
+	github.com/opencontainers/runc v1.3.0 // indirect
 	github.com/opencontainers/runtime-spec v1.2.1 // indirect
 	github.com/opencontainers/selinux v1.12.0 // indirect
 	github.com/pkg/errors v0.9.1 // indirect
