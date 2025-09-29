@@ -13,6 +13,8 @@ import (
 	"github.com/containers/image/v5/transports/alltransports"
 	"github.com/containers/image/v5/types"
 	"github.com/containers/storage"
+	"github.com/vbauerster/mpb/v8"
+	"github.com/vbauerster/mpb/v8/decor"
 )
 
 // ContainerSnap is the main object of the container-snap binary
@@ -169,20 +171,41 @@ func NewContainerSnap(rootDir string) (*ContainerSnap, error) {
 }
 
 func (c *ContainerSnap) PullImage(url string) ([]*libimage.Image, error) {
-	// Check if the URL already has a transport prefix, if not prepend
-	// docker:// which corresponds to pulling from registry
 	if alltransports.TransportFromImageName(url) == nil {
 		url = "docker://" + url
 	}
 
 	opts := libimage.PullOptions{CopyOptions: libimage.CopyOptions{Progress: make(chan types.ProgressProperties)}}
 	go func() {
+		progress := mpb.New()
+		activeBars := make(map[string]*mpb.Bar)
+
+		defer progress.Wait()
+
 		for e := range opts.Progress {
+			digest := e.Artifact.Digest.Encoded()
+			shortDigest := digest[:12]
+
 			switch e.Event {
 			case types.ProgressEventRead:
-				fmt.Printf("Pulling layer %s, fetched %d of %d\n", e.Artifact.Digest, e.Offset, e.Artifact.Size)
+				bar, exists := activeBars[digest]
+				if !exists {
+					bar = progress.AddBar(e.Artifact.Size,
+						mpb.PrependDecorators(
+							decor.Name(fmt.Sprintf("Layer %s", shortDigest)),
+						),
+						mpb.AppendDecorators(
+							decor.CountersKibiByte("%.1f / %.1f"),
+							decor.EwmaSpeed(decor.SizeB1024(0), " %.1f/s", 30),
+						),
+					)
+					activeBars[digest] = bar
+				}
+				bar.SetCurrent(int64(e.Offset))
 			case types.ProgressEventDone:
-				fmt.Printf("Pulled layer %s\n", e.Artifact.Digest)
+				if bar, exists := activeBars[digest]; exists {
+					bar.SetCurrent(e.Artifact.Size)
+				}
 			}
 		}
 	}()
