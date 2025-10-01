@@ -75,67 +75,55 @@ Ensure that `snapper` is not present on the system by de-installing it:
 # zypper -n rm snapper
 ```
 
-Now switch to the image that you just pulled down:
+Now switch to the image that you just pulled down. You can use the convenience
+script
+[`container-snap-switch-snapshot.sh`](./container-snap-switch-snapshot.sh):
 
 ```ShellSession
 # container-snap list-images
 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74,2025-01-09 10:47:31.818647723 +0000 UTC,registry.opensuse.org/home/dancermak/containers/opensuse/bootable:latest
-# container-snap switch 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74
+# container-snap-switch-snapshot 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74
 ````
 
-Now we have to perform a few ugly but necessary manual steps. First, we need to
-copy our existing `/etc/fstab` into the snapshot so that the existing subvolume
-setup is working in the snapshot (otherwise `/var/` will not be a subvolume and
-a lot of assumptions of `tukit` will no longer apply):
-
-```ShellSession
-# cp /etc/fstab $(container-snap get-root 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74)/etc/
-```
-
-Also, you'll most likely need to do the same with `/etc/resolv.conf` or you
-won't have any name resolution inside the new snapshot:
-```ShellSession
-# cp /etc/resolv.conf $(container-snap get-root 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74)/etc/
-```
-
-And finally, in case your container image does not specify an unprivileged user
-or sets a root password, you definitely want to copy `/etc/shadow`, or you won't
-be able to log in after reboot:
-```ShellSession
-# cp /etc/shadow $(container-snap get-root 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74)/etc/
-```
-
-Now we need to make sure that the system will actually boot from the new
-snapshot. For that, we will reinstall grub2, regenerate the initrd, write the
-grub config and force install the bootloader again. On openSUSE, this is run as
-follows:
-
-```ShellSession
-# tukit call 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74 zypper -n in -f grub2
-.. snip ..
-# tukit call 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74 dracut --force --regenerate-all
-.. snip ..
-# tukit call 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74 bash -c "/usr/sbin/grub2-mkconfig > /boot/grub2/grub.cfg"
-.. snip ..
-# tukit call 43de4dcfccec5cd0b92c04afe1bbde645ff24bff5ff8845b73e82ae8bfd58e74 /sbin/pbl --install
-.. snip ..
-```
-
-Now reboot and cross your fingers that the machine actually comes up again 🤞
+The script performs currently a few ugly but necessary steps (like copying
+`/etc/fstab`, `/etc/resolv.conf` and `/etc/shadow`, reinstalling the bootloader
+and running `dracut`).
 
 
 # Give it a try
 
 You can find packages for openSUSE in my home project on OBS, including:
 
-- a minimal KVM image with container-snap pre-installed:
-  https://build.opensuse.org/package/show/home:dancermak/kiwi-templates-Minimal
+- container-snap:
+  https://build.opensuse.org/package/show/home:dancermak/container-snap
 
 - `transactional-update` built with the necessary patches applied:
   https://build.opensuse.org/package/show/home:dancermak/transactional-update
 
-- a "bootable" openSUSE container:
+- a "bootable" openSUSE container (available for Tumbleweed and Leap/SLE 15.6):
   https://build.opensuse.org/package/show/home:dancermak/opensuse-boot-image
 
-- container-snap itself:
-  https://build.opensuse.org/package/show/home:dancermak/container-snap
+- a fat "bootable" openSUSE container (derives from `opensuse-boot-image` and
+  adds a few packages on top):
+  https://build.opensuse.org/package/show/home:dancermak/opensuse-fat-boot-image
+
+This repository contains a kiwi disk image description in the `images/`
+subdirectory. To build the test image, run the following command from the
+`images` subdirectory:
+
+```bash
+kiwi system boxbuild --box=tumbleweed -- --description . --target-dir /var/tmp/kiwi/
+```
+
+You will need kiwi and the kiwi boxbuild plugin for that. You can build the
+image using plain kiwi without the boxbuild plugin, but note that this might not
+work if your root partition is using btrfs (btrfs has issues with nested
+subvolumes).
+
+The resulting disk image will be in
+`/var/tmp/kiwi/container-snap-system.x86_64-1.0.0-0.qcow2` and can be booted
+directly from. It will boot into a minimal openSUSE Tumbleweed that on first
+boot will load the
+[`opensuse-boot-image`](https://build.opensuse.org/package/show/home:dancermak/opensuse-boot-image)
+and set to boot from it. When you reboot the VM, you'll be now running a system
+using `container-snap`!
