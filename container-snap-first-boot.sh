@@ -22,3 +22,7 @@ fi
 image_id=$(echo "$most_recent_image" | cut -d',' -f1)
 
 /usr/bin/container-snap-switch-snapshot.sh "$image_id"
+
+# on first boot we need to copy the generated grub.cfg over to /boot/ otherwise
+# grub will not pick it up
+cp "$(container-snap get-root $image_id)"/boot/grub2/grub.cfg /boot/grub2/grub.cfg
