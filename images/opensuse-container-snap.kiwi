@@ -58,10 +58,11 @@
     <package name="filesystem"/>
     <package name="coreutils"/>
     <package name="glibc-locale"/>
-    <package name="skopeo"/>
     <package name="openssl"/>
     <package name="ca-certificates"/>
     <package name="ca-certificates-mozilla"/>
+    <!-- take precedence over busybox -->
+    <package name="sed"/>
   </packages>
 
   <packages type="image">
@@ -71,6 +72,7 @@
     <package name="patterns-openSUSE-base"/>
     <package name="transactional-update"/>
     <package name="container-snap"/>
+    <package name="skopeo"/>
     <package name="dracut-kiwi-oem-repart"/>
     <package name="dracut-kiwi-oem-dump"/>
     <package name="shadow"/>
