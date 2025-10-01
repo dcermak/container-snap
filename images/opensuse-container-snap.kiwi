@@ -31,7 +31,7 @@
         <volume name="root"/>
         <volume name="opt"/>
         <volume name="srv"/>
-        <volume name=".snapshot"/>
+        <volume name=".snapshots"/>
         <volume name="boot/grub2/i386-pc"/>
         <volume name="boot/grub2/x86_64-efi" mountpoint="boot/grub2/x86_64-efi"/>
         <volume name="boot/writable"/>
