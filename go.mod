@@ -7,7 +7,7 @@ toolchain go1.24.3
 require (
 	github.com/containerd/btrfs/v2 v2.0.0
 	github.com/containers/common v0.64.0
-	github.com/containers/image/v5 v5.36.1
+	github.com/containers/image/v5 v5.36.2
 	github.com/containers/storage v1.59.1
 	github.com/moby/sys/mountinfo v0.7.2
 	github.com/sirupsen/logrus v1.9.3
