@@ -44,6 +44,9 @@ done
 systemctl enable NetworkManager.service
 systemctl enable systemd-resolved.service
 
+# convenience shell for libvirt
+systemctl enable serial-getty@ttyS0.service
+
 # Enable container-snap-first-boot service
 systemctl enable container-snap-first-boot.service
 
