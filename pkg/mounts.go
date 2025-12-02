@@ -13,10 +13,10 @@ import (
 // FindDefaultSubvolume finds the default btrfs subvolume for / and returns its numeric ID
 func FindDefaultSubvolume() (uint64, error) {
 	f, err := os.Open("/proc/thread-self/mountinfo")
-	defer f.Close()
 	if err != nil {
 		return 0, err
 	}
+	defer f.Close()
 
 	return findDefaultSubvolume(f)
 }
