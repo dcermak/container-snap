@@ -10,7 +10,7 @@ require (
 	github.com/containers/image/v5 v5.36.2
 	github.com/containers/storage v1.59.1
 	github.com/moby/sys/mountinfo v0.7.2
-	github.com/sirupsen/logrus v1.9.3
+	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli/v3 v3.6.2
 	github.com/vbauerster/mpb/v8 v8.11.3
 )
