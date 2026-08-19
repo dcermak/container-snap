@@ -10,7 +10,7 @@ require (
 	github.com/moby/sys/mountinfo v0.7.2
 	github.com/sirupsen/logrus v1.9.4
 	github.com/urfave/cli/v3 v3.10.1
-	github.com/vbauerster/mpb/v8 v8.14.0
+	github.com/vbauerster/mpb/v8 v8.15.2
 )
 
 require (
