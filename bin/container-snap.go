@@ -9,8 +9,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/containers/storage/pkg/reexec"
 	containersnap "github.com/dcermak/container-snap/pkg"
+	"go.podman.io/storage/pkg/reexec"
 
 	logrus "github.com/sirupsen/logrus"
 	cli "github.com/urfave/cli/v3"
