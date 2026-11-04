@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	github.com/containerd/btrfs/v2 v2.0.0
-	github.com/moby/sys/mountinfo v0.7.2
+	github.com/moby/sys/mountinfo v0.7.3
 	github.com/sirupsen/logrus v1.10.2
 	github.com/urfave/cli/v3 v3.14.0
 	github.com/vbauerster/mpb/v8 v8.16.3
