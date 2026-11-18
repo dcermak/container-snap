@@ -10,7 +10,7 @@ require (
 	github.com/vbauerster/mpb/v8 v8.16.3
 	go.podman.io/common v0.70.0
 	go.podman.io/image/v5 v5.42.0
-	go.podman.io/storage v1.65.0
+	go.podman.io/storage v1.65.1
 )
 
 require (
